@@ -8,11 +8,11 @@ Node: class {
     
     init: func(=matrix) {}
     
-    addChild: func(n: Node) {
-        getChildren() add(n)
+    add: func(n: Node) {
+        list() add(n)
     }
     
-    getChildren: func -> List<Node> {
+    list: func -> List<Node> {
         if(!children) children = ArrayList<Node> new()
         children
     }
@@ -41,9 +41,10 @@ Node: class {
             
             if(!isPossible) return false
             
-            printf("Is possible, trying a randomization!\n")
+            //printf("Is possible, trying a randomization!\n")
             
             x, y: Int
+            
             while(true) {
                 x = (rand() % 9)
                 y = (rand() % 9)
@@ -56,6 +57,7 @@ Node: class {
             }
             
             isLegal = isLegal(matrix, x, y)
+            if(!isLegal) matrix[x, y] == -1
         }
 
         return true
@@ -70,7 +72,7 @@ Node: class {
         for(x in 0..m getWidth()) {
             if(x == refX) continue
             if(v == matrix[x, refY]) {
-                printf("[column] Not legal because there's another %d at (%d, %d)\n", v, x, refY)
+                //printf("[column] Not legal because there's another %d at (%d, %d)\n", v, x, refY)
                 return false
             }
         }
@@ -79,7 +81,7 @@ Node: class {
         for(y in 0..m getHeight()) {
             if(y == refY) continue
             if(v == matrix[refX, y]) {
-                printf("[line] Not legal because there's another %d at (%d, %d)\n", v, refX, y)
+                //printf("[line] Not legal because there's another %d at (%d, %d)\n", v, refX, y)
                 return false
             }
         }

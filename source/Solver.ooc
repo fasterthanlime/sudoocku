@@ -5,6 +5,10 @@ Solver: class {
     root : Node
     path : Path
     
+    generations := 3
+    breadth := 5
+    risk := 15
+    
     init: func(matrix: Matrix) {
         root = Node new(matrix)
         path = Path new()
@@ -13,12 +17,22 @@ Solver: class {
     
     run: func {
         //while(true) {
-        for(i in 0..3) {
-            node := path peek() clone()
-            if(node randomize()) {
+        for(i in 0..generations) {
+            parent := path peek()
+            
+            for(i in 0..breadth) {
+                node := parent clone()
+                for(i in 0..risk) {
+                    could := node randomize()
+                    if(!could) {
+                        "Couldn't randomize!, mat = " println()
+                        node print()
+                        exit(1)
+                    }
+                }
                 printf("After randomization, mat = \n")
                 node print()
-                path push(node)
+                parent add(node)
             }
         }
     }
