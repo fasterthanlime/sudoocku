@@ -1,0 +1,4 @@
+sudoocku is a generational sudoku solver in ooc
+
+it applies random changes to the sudoku matrix, and select the best direction to go into,
+going back in the generational tree if needed.
