@@ -22,12 +22,16 @@ Solver: class {
     
     explore: func (node: Node) {
         
-        for(i in 0..100) {
+        while(true) {
             node crossOut()
-            if(node findUnique() && node holes() == 0) {
-                printf("Solution = \n")
-                node print()
-                exit(0)
+            if(node findUnique()) {
+                if(node holes() == 0) {
+                    printf("Solution = \n")
+                    node print()
+                    exit(0)
+                }
+            } else {
+                break
             }
         }
         
