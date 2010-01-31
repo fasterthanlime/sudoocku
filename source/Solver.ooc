@@ -1,4 +1,5 @@
 import Matrix, Node, Path
+import os/Time
 
 Solver: class {
     
@@ -6,7 +7,7 @@ Solver: class {
     path : Path
     
     generations := 3
-    breadth := 5
+    breadth := 100000
     risk := 15
     
     init: func(matrix: Matrix) {
@@ -16,23 +17,33 @@ Solver: class {
     }
     
     run: func {
+        srand(Time microsec())
+        
         //while(true) {
         for(i in 0..generations) {
             parent := path peek()
             
-            for(i in 0..breadth) {
+            maxScore := -99999999
+            bestBreed : Node = null
+            
+            //for(i in 0..breadth) {
+            while(maxScore < 0) {
                 node := parent clone()
-                for(i in 0..risk) {
-                    could := node randomize()
-                    if(!could) {
-                        "Couldn't randomize!, mat = " println()
-                        node print()
-                        exit(1)
-                    }
+                
+                node makeHoles(2)
+                while(node randomize()) { /*printf(".")*/ }
+                
+                score := node score()
+                if(score > maxScore) {
+                    maxScore = score
+                    bestBreed = node
+                    
+                    printf("\nFor now, best breed (score %d) = \n", maxScore)
+                    bestBreed print()
+                    parent = bestBreed
+                } else {
+                    //printf("%d", score)
                 }
-                printf("After randomization, mat = \n")
-                node print()
-                parent add(node)
             }
         }
     }

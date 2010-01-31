@@ -20,6 +20,66 @@ Node: class {
     clone: func -> This { new(matrix clone()) }
     print: func { matrix print() }
     
+    makeHoles: func (howMany: Int) {
+        for(i in 0..howMany) {
+            matrix[rand() % 9, rand() % 9] = -1
+        }
+    }
+    
+    holes: func -> Int {
+        
+        holes := 0
+        for(y in 0..9) for(x in 0..9) {
+            if(matrix[x, y] == -1) holes += 1
+        }
+        holes
+        
+    }
+    
+    score: func -> Int {
+        
+        score := 0
+        
+        {
+            row : Bool[9]
+            for(y in 0..9) {
+                for(i in 0..9) row[i] = false
+                
+                for(x in 0..9) {
+                    v := matrix[x, y]
+                    if(v == -1) {
+                        continue
+                    }
+                    if(row[v - 1] == true) {
+                        score = score - 1
+                    }
+                    row[v - 1] = true
+                }
+            }
+        }
+        
+        {
+            col : Bool[9]
+            for(x in 0..9) {
+                for(i in 0..9) col[i] = false
+                
+                for(y in 0..9) {
+                    v := matrix[x, y]
+                    if(v == -1) {
+                        continue
+                    }
+                    if(col[v - 1] == true) {
+                        score = score - 1
+                    }
+                    col[v - 1] = true
+                }
+            }
+        }
+        
+        score
+        
+    }
+    
     /**
      * @return true if a randomization was possible, false if not
      */
@@ -40,8 +100,6 @@ Node: class {
             }
             
             if(!isPossible) return false
-            
-            //printf("Is possible, trying a randomization!\n")
             
             x, y: Int
             
