@@ -1,4 +1,4 @@
-import structs/List
+import structs/List, Cell
 
 version(unix || apple) {
     Matrix lowerLeft  = "└"
@@ -23,48 +23,27 @@ Matrix: class {
     lowerLeft, upperLeft, lowerRight, upperRight, horiz, vert : static String
     
     width, height: Int
-    data: Int*
+    data: Cell*
     
     init: func ~fromSize (=width, =height) {
-        data = gc_malloc(Int size * width * height)
+        data = gc_malloc(Cell size * width * height)
     }
     
+    /*
     init: func ~copy (src: This) {
         this(src width, src height)
-        memcpy(this data, src data, Int size * width * height)
+        memcpy(this data, src data, Cell size * width * height)
     }
+    */
     
-    init: func ~from2DArray (=width, =height, data: Int*) {
-        init~fromSize(width, height)
-        memcpy(this data, data, Int size * width * height)
-    }
+    //clone: func -> This { new(this) }
     
-    clone: func -> This { new(this) }
-    
-    identity: static func (size: Int) -> This {
-        n := new(size, size)
-        for(i in 0..size) n[i, i] = 1
-        n
-    }
-    
-    set: func (x, y: Int, val: Int) {
+    set: func (x, y: Int, val: Cell) {
         data[x + y * width] = val
     }
     
-    get: func (x, y: Int) -> Int {
+    get: func (x, y: Int) -> Cell {
         return data[x + y * width]
-    }
-    
-    rowMul: func (row: Int, factor: Int) {
-        for(x in 0..width) {
-            this[x, row] = factor * this[x, row]
-        }
-    }
-    
-    rowAdd: func (srcRow, dstRow: Int, factor: Int) {
-        for(x in 0..width) {
-            this[x, dstRow] = this[x, dstRow] + this[x, srcRow] * factor
-        }
     }
     
     rowSwap: func (row1, row2: Int) {
@@ -75,32 +54,6 @@ Matrix: class {
         }
     }
 
-    sub: func (m2: This) -> This {
-        m1 := this
-        m3 := This new(width, height)
-        for(y in 0..height) {
-            for(x in 0..width) {
-                m3 set(x, y, m1 get(x, y) - m2 get(x, y))
-            }
-        }
-        return m3
-    }
-    
-    mul: func (m2: This) -> This {
-        m1 := this
-        m3 := This new(m2 width, m1 height)
-        for(m2x in 0..m2 width) {
-            for(m1y in 0..m1 height) {
-                sum := 0.0
-                for(m2y_m1x in 0..m2 height) {
-                    sum += m1 get(m2y_m1x, m1y) * m2 get(m2x, m2y_m1x)
-                }
-                m3 set(m2x, m1y, sum)
-            }
-        }
-        return m3
-    }
-    
     print: func {
         xspacing := 3
         
@@ -111,7 +64,7 @@ Matrix: class {
         for(y in 0..height) {
             printf("%s", vert)
             for(x in 0..width) {
-                val := get(x, y)
+                val := get(x, y) getValue()
                 if(val == -1) {
                     printf("  .")
                 } else {
@@ -142,7 +95,5 @@ Matrix: class {
 
 }
 
-operator *   (m1, m2: Matrix) -> Matrix { m1 mul(m2) }
-operator -   (m1, m2: Matrix) -> Matrix { m1 sub(m2) }
 operator []  (m: Matrix, x, y: Int) -> Int    { m get(x, y) }
 operator []= (m: Matrix, x, y: Int, val: Int) { m set(x, y, val) }
