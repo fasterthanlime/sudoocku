@@ -1,4 +1,4 @@
-import structs/List, Cell
+import structs/List, Hut
 
 version(unix || apple) {
     Matrix lowerLeft  = "└"
@@ -23,26 +23,29 @@ Matrix: class {
     lowerLeft, upperLeft, lowerRight, upperRight, horiz, vert : static String
     
     width, height: Int
-    data: Cell*
+    data: Hut*
     
     init: func ~fromSize (=width, =height) {
-        data = gc_malloc(Cell size * width * height)
+        data = gc_malloc(Hut size * width * height)
+        for(y in 0..height) for(x in 0..width) {
+            this[x, y] = Hut new(-1)
+        }
     }
     
-    /*
     init: func ~copy (src: This) {
         this(src width, src height)
-        memcpy(this data, src data, Cell size * width * height)
+        for(y in 0..height) for(x in 0..width) {
+            this[x, y] = src[x, y] clone()
+        }
     }
-    */
     
-    //clone: func -> This { new(this) }
+    clone: func -> This { new(this) }
     
-    set: func (x, y: Int, val: Cell) {
+    set: func (x, y: Int, val: Hut) {
         data[x + y * width] = val
     }
     
-    get: func (x, y: Int) -> Cell {
+    get: func (x, y: Int) -> Hut {
         return data[x + y * width]
     }
     
@@ -90,10 +93,8 @@ Matrix: class {
     
     getWidth:  func -> Int { width }
     getHeight: func -> Int { height }
-    
-    isSquare: func -> Bool { getWidth() == getHeight() }
 
 }
 
-operator []  (m: Matrix, x, y: Int) -> Int    { m get(x, y) }
-operator []= (m: Matrix, x, y: Int, val: Int) { m set(x, y, val) }
+operator []  (m: Matrix, x, y: Int) -> Hut    { m get(x, y) }
+operator []= (m: Matrix, x, y: Int, val: Hut) { m set(x, y, val) }

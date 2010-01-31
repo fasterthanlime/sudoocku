@@ -1,5 +1,5 @@
 import structs/Array, io/FileReader, text/StringTokenizer
-import Matrix, Solver
+import Matrix, Solver, Hut
 
 // wooh, globals are evil
 appName := ""
@@ -36,7 +36,7 @@ main: func (args: Array<String>) {
                 printf("Missing value! Expected %dx%d = %d values\n", width, height, width * height)
                 exit(0)
             }
-            m set(x, y, st nextToken() toInt())
+            m set(x, y, Hut new(st nextToken() toInt()))
         }
     }
     
